@@ -3,7 +3,8 @@
 var Q = require('q'),
    is = require('is'),
    qs = require('querystring'),
-  req = require('request'),
+  // req = require('request'),
+axios = require('axios'),
  trim = function(value) {
   return value.replace(/^\s+|\s+$/g, '');
 },
@@ -81,22 +82,39 @@ Wikia.prototype._genUrl = function(method, options) {
 
 Wikia.prototype._request = function(url) {
   var deferred = Q.defer();
-  req.get(url, function(error, response, body) {
-    if(error) {
+  axios.get(url)
+    .then(response => {
+      if(response.code === 200) {
+        deferred.resolve(response.data);
+      } else {
+        deferred.reject(response);
+      }
+    })
+    .catch(error => {
       deferred.reject(error);
-    }
-
-    if(response.statusCode === 200) {
-      deferred.resolve(JSON.parse(body));
-    } else if(response.statusCode === 400 || response.statusCode === 404) {
-      deferred.reject(JSON.parse(body));
-    } else {
-      deferred.reject(response);
-    }
-  });
+    });
 
   return deferred.promise;
 };
+
+// Wikia.prototype._request = function(url) {
+//   var deferred = Q.defer();
+//   req.get(url, function(error, response, body) {
+//     if(error) {
+//       deferred.reject(error);
+//     }
+
+//     if(response.statusCode === 200) {
+//       deferred.resolve(JSON.parse(body));
+//     } else if(response.statusCode === 400 || response.statusCode === 404) {
+//       deferred.reject(JSON.parse(body));
+//     } else {
+//       deferred.reject(response);
+//     }
+//   });
+
+//   return deferred.promise;
+// };
 
 Wikia.prototype._getActivity = function(method, options) {
 
