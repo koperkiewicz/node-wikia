@@ -6,7 +6,7 @@
 ## Install
 
 ```sh
-$ npm install --save node-wikia
+$ npm install --save https://github.com/koperkiewicz/node-wikia/tarball/master
 ```
 
 
